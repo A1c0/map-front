@@ -1,0 +1,15 @@
+h2 {
+  text-align: center;
+  color: #4d70be;
+  text-shadow: 5px 10px 18px #9686cb;
+  padding: 15px;
+}
+#authors {
+  background-color: #c6bfbf;
+  text-align: center;
+  font-size: x-large;
+  color: #4d70be;
+  text-shadow: 5px 10px 18px #9686cb;
+  margin: 0;
+  padding: 15px;
+}

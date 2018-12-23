@@ -1,0 +1,19 @@
+#header {
+  background-color: #c6bfbf;
+  padding: 15px;
+}
+
+#title {
+  text-align: center;
+  font-size: xx-large;
+  color: #4d70be;
+  text-shadow: 5px 10px 18px #9686cb;
+  margin: 0;
+}
+
+#date {
+  font-size: small;
+  text-align: right;
+  color: #4d70be;
+  margin: 0;
+}
