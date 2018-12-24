@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 import * as L from 'leaflet';
 
@@ -15,49 +16,41 @@ export class MapComponent implements OnInit {
 
   private cities;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.heroesMap = null;
     this.markers = null;
     this.cities = [];
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.heroesMap = L.map('heroesMap').setView([46.8, 2], 6);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: 'Heroes Map'
     }).addTo(this.heroesMap);
     this.markers = new L.LayerGroup();
     this.heroesMap.addLayer(this.markers);
-    this.getCities();
+    await this.getCities();
+    console.log(this.cities);
     this.showCities();
   }
 
   addCity(city) {
-    const marker = L.circle([city.lat, city.lng], {
-      color: '#ff0026',
-      fillColor: '#ff5b7e',
+    const marker = L.circle([city.latitude_, city.longitude_], {
+      color: '#001bff',
+      fillColor: '#2ea4ff',
       fillOpacity: 0.4,
       radius: 20000
     }).addTo(this.markers);
-    marker.bindPopup(''); // Je ne mets pas de texte par défaut
+    marker.bindPopup('');
     const mapopup = marker.getPopup();
-    mapopup.setContent(city.name);
+    mapopup.setContent(city.name_);
   }
 
-  getCities() {
-    // Pour l'instant comme ça mais voir ensuite via un request promise
-    this.cities = [
-      {name: 'Paris', lat: '48.86', lng: '2.35'},
-      {name: 'Lille', lat: '50.63', lng: '3.06'},
-      {name: 'Brest', lat: '48.39', lng: '-4.49'},
-      {name: 'Lyon', lat: '45.76', lng: '4.84'},
-      {name: 'Toulouse', lat: '43.60', lng: '1.44'},
-      {name: 'Marseille', lat: '43.30', lng: '5.37'},
-      {name: 'Strasbourg', lat: '48.57', lng: '7.75'},
-      {name: 'Nantes', lat: '47.22', lng: '-1.55'},
-      {name: 'Bordeaux', lat: '44.84', lng: '-0.58'},
-      {name: 'Montpellier', lat: '48.57', lng: '7.75'}
-    ];
+  async getCities() {
+    const res = this.http.get(' http://0.0.0.0:3090/getCities');
+    this.cities = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
   }
 
   showCities() {
