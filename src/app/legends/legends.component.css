@@ -1,5 +1,10 @@
 .legends {
-  height: 50%;
+  margin-top: 15px;
+  height: auto;
+}
+
+#heroes {
+  min-height: 20%;
 }
 
 .title {
@@ -12,4 +17,14 @@
   text-align: center;
   margin: 0;
   padding: 0;
+}
+
+.case {
+  padding: 8px !important;
+}
+.tableHeroes {
+  width: 33.3%;
+}
+.tableVillains {
+  width: 50%;
 }
