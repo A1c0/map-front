@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import * as L from 'leaflet';
+import * as R from 'ramda';
 
 @Component({
   selector: 'app-map',
@@ -12,14 +13,20 @@ export class MapComponent implements OnInit {
 
   private heroesMap;
 
-  private markers;
+  private markersCities;
+
+  private markersHeroes;
 
   private cities;
 
+  private heroes;
+
   constructor(private http: HttpClient) {
     this.heroesMap = null;
-    this.markers = null;
+    this.markersCities = null;
+    this.markersHeroes = null;
     this.cities = [];
+    this.heroes = [];
   }
 
   async ngOnInit() {
@@ -27,30 +34,78 @@ export class MapComponent implements OnInit {
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: 'Heroes Map'
     }).addTo(this.heroesMap);
-    this.markers = new L.LayerGroup();
-    this.heroesMap.addLayer(this.markers);
+    this.markersCities = new L.LayerGroup();
+    this.markersHeroes = new L.LayerGroup();
+    this.heroesMap.addLayer(this.markersCities);
+    this.heroesMap.addLayer(this.markersHeroes);
     await this.getCities();
-    console.log(this.cities);
     this.showCities();
+    this.startRefreshHeroes();
   }
 
   addCity(city) {
     const marker = L.circle([city.latitude_, city.longitude_], {
       color: '#001bff',
       fillColor: '#2ea4ff',
-      fillOpacity: 0.4,
+      fillOpacity: 0.5,
       radius: 20000
-    }).addTo(this.markers);
+    }).addTo(this.markersCities);
     marker.bindPopup('');
     const mapopup = marker.getPopup();
     mapopup.setContent(city.name_);
   }
 
+  async updateHeroesPos() {
+    this.markersHeroes.clearLayers();
+    await this.getHeroes();
+    this.heroes.forEach(hero => {
+      console.log('hero:');
+      console.log(hero);
+      const cityHeroes = R.pipe(
+        // @ts-ignore
+        R.filter(x => x.name_ === hero.pos),
+        R.head
+      )(this.cities);
+      console.log('cityHeroes:');
+      console.log(cityHeroes);
+      if (!hero.moving) {
+        L.circle([cityHeroes.latitude_, cityHeroes.longitude_], {
+          stroke: false,
+          fill: true,
+          fillColor: '#ff6800',
+          fillOpacity: 0.7,
+          radius: 10000
+        }).addTo(this.markersHeroes);
+      } else {
+        L.circle([cityHeroes.latitude_, cityHeroes.longitude_], {
+          stroke: false,
+          fill: true,
+          fillColor: '#ff0400',
+          fillOpacity: 0.7,
+          radius: 10000
+        }).addTo(this.markersHeroes);
+      }
+    });
+  }
+
   async getCities() {
-    const res = this.http.get(' http://0.0.0.0:3090/getCities');
+    const res = this.http.get('http://0.0.0.0:3090/getCities');
     this.cities = await new Promise((resolve) => {
       res.subscribe(resolve);
     });
+  }
+
+  async getHeroes() {
+    const res = this.http.get('http://0.0.0.0:3070/getHeroesFront');
+    this.heroes = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
+  }
+
+  startRefreshHeroes() {
+    setInterval(async () => {
+      await this.updateHeroesPos();
+    }, 1000);
   }
 
   showCities() {
