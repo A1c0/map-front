@@ -1,6 +1,12 @@
-<div>
+<div class="legends">
   <p class="title">Compteur de vilains en ville</p>
+  <p class="perso" *ngFor="let cities of villainsByCities">
+    {{ cities.name }}: {{ cities.score }}
+  </p>
 </div>
-<div>
+<div class="legends">
   <p class="title">Position des heroes</p>
+  <p class="perso">
+
+  </p>
 </div>
