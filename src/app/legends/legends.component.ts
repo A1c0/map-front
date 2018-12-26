@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-legends',
@@ -7,9 +8,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LegendsComponent implements OnInit {
 
-  constructor() { }
+  private villains;
+  private villainsByCities;
 
-  ngOnInit() {
+  constructor(private http: HttpClient) {
+    this.villains = null;
+    this.villainsByCities = null;
   }
 
+  async ngOnInit() {
+    await this.getVillains();
+    await this.getVillainsByCity();
+  }
+
+  async getVillains() {
+    const res = this.http.get(' http://0.0.0.0:3060/getVillains');
+    this.villains = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
+  }
+
+  async getVillainsByCity() {
+    const res = this.http.post('http://0.0.0.0:3060/countVillainsByCities', this.villains);
+    this.villainsByCities = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
+  }
 }
