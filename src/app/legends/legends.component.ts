@@ -19,6 +19,10 @@ export class LegendsComponent implements OnInit {
   async ngOnInit() {
     await this.getVillains();
     await this.getVillainsByCity();
+    setInterval(() => {
+      this.getVillains();
+      this.getVillainsByCity();
+    }, 1000);
   }
 
   async getVillains() {
@@ -26,6 +30,7 @@ export class LegendsComponent implements OnInit {
     this.villains = await new Promise((resolve) => {
       res.subscribe(resolve);
     });
+    console.log(this.villains);
   }
 
   async getVillainsByCity() {
@@ -33,5 +38,6 @@ export class LegendsComponent implements OnInit {
     this.villainsByCities = await new Promise((resolve) => {
       res.subscribe(resolve);
     });
+    console.log(this.villainsByCities);
   }
 }
