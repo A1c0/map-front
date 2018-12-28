@@ -11,7 +11,7 @@
     <tbody>
     <tr *ngFor="let hero of heroes">
       <td class="case">{{ hero.name }}</td>
-      <td class="case">{{ hero.pos }}</td>
+      <td class="case">{{ show(hero.pos) }}</td>
       <td class="case">{{ hero.score }}</td>
     </tr>
     </tbody>
