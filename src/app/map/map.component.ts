@@ -71,19 +71,20 @@ export class MapComponent implements OnInit {
   }
 
   async updateHeroesPos() {
+
+    const getCity = name => R.pipe(
+      // @ts-ignore
+      R.filter(x => x.name_ === name),
+      R.head
+    )(this.cities);
+
     this.markersHeroes.clearLayers();
     await this.getHeroes();
     this.heroes.forEach(hero => {
       console.log('hero:');
       console.log(hero);
-      const cityHeroes = R.pipe(
-        // @ts-ignore
-        R.filter(x => x.name_ === hero.pos),
-        R.head
-      )(this.cities);
-      console.log('cityHeroes:');
-      console.log(cityHeroes);
       if (!hero.moving) {
+        const cityHeroes = getCity(hero.pos);
         L.circle([cityHeroes.latitude_, cityHeroes.longitude_], {
           stroke: false,
           fill: true,
@@ -92,12 +93,27 @@ export class MapComponent implements OnInit {
           radius: 10000
         }).addTo(this.markersHeroes);
       } else {
-        L.circle([cityHeroes.latitude_, cityHeroes.longitude_], {
+        console.log(R.split('move', hero.pos));
+        const citiesMoveHeroes = R.pipe(
+          R.split('move'),
+          R.map(getCity)
+        )(hero.pos);
+        console.log(citiesMoveHeroes);
+        L.circle([citiesMoveHeroes[0].latitude_, citiesMoveHeroes[0].longitude_], {
           stroke: false,
           fill: true,
-          fillColor: '#ff0400',
+          fillColor: '#ff000e',
           fillOpacity: 0.7,
           radius: 10000
+        }).addTo(this.markersHeroes);
+        L.polygon([
+          [citiesMoveHeroes[0].latitude_, citiesMoveHeroes[0].longitude_],
+          [citiesMoveHeroes[1].latitude_, citiesMoveHeroes[1].longitude_],
+        ], {
+          color: '#ff000e',
+          fill: true,
+          fillColor: '#ff000e',
+          fillOpacity: 0.7
         }).addTo(this.markersHeroes);
       }
     });
@@ -120,7 +136,7 @@ export class MapComponent implements OnInit {
   startRefreshHeroes() {
     setInterval(async () => {
       await this.updateHeroesPos();
-    }, 1000);
+    }, 500);
   }
 
   showCities() {
