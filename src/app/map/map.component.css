@@ -1,5 +1,5 @@
 #heroesMap {
   border: 5px solid #4d70be;
-  height: 600px;
-  width: 100%;
+  height: 100%;
+  width: inherit;
 }

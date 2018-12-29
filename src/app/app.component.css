@@ -3,7 +3,7 @@
 }
 
 #page {
-  background-color: #2b2b2b;
+  background-color: #2b2b2b !important;
   height: -webkit-fill-available;
 }
 
@@ -11,12 +11,16 @@
   margin: 50px;
   padding-left: 15px;
   padding-right: 15px;
+  overflow-y: scroll #2b2b2b;
+}
+#map {
+  height: auto;
+  min-height: 600px;
 }
 
 #divFooter {
   background-color: #8e8787;
   bottom: 0;
-  position: fixed;
   width: 100%;
   margin: 0;
 }
