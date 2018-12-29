@@ -13,6 +13,7 @@ export interface Cities {
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
+
 export class HeaderComponent implements OnInit {
 
   villains: Villains[] = [
@@ -38,11 +39,13 @@ export class HeaderComponent implements OnInit {
   ];
 
   private nbVillains;
-  private city;
+  private cityVillain;
+  private cityHero;
 
   constructor(private http: HttpClient) {
     this.nbVillains = Number;
-    this.city = String;
+    this.cityVillain = String;
+    this.cityHero = String;
   }
 
   ngOnInit() {
@@ -51,18 +54,28 @@ export class HeaderComponent implements OnInit {
   onSelectVillain(val) {
     this.nbVillains = val;
   }
-  onSelectCity(val) {
-    this.city = val;
+  onSelectCityVillain(val) {
+    this.cityVillain = val;
+  }
+  onSelectCityHero(val) {
+    this.cityHero = val;
   }
 
   async addVillains() {
     let i = 0;
     for (i = 0; i < this.nbVillains; i++) {
-      const res = this.http.post('http://0.0.0.0:3060/newVillain', {name: 'Victor', city: this.city});
+      const res = this.http.post('http://0.0.0.0:3060/newVillain', {name: 'Victor', city: this.cityVillain});
       await new Promise((resolve) => {
         res.subscribe(resolve);
       });
     }
+  }
+
+  async addHero(heroName) {
+    const res = this.http.post('http://0.0.0.0:3070/newHero', {name: heroName, city: this.cityHero});
+    await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
   }
 
 }
