@@ -25,30 +25,23 @@ export class HeaderComponent implements OnInit {
     {value: '100'}
   ];
   cities: Cities[] = [
-    {name: 'city'},
-    {name: 'Paris'},
-    {name: 'Lille'},
-    {name: 'Brest'},
-    {name: 'Lyon'},
-    {name: 'Toulouse'},
-    {name: 'Marseille'},
-    {name: 'Strasbourg'},
-    {name: 'Nantes'},
-    {name: 'Bordeaux'},
-    {name: 'Dijon'}
+    {name: 'city'}
   ];
 
   private nbVillains;
   private cityVillain;
   private cityHero;
+  private citiesDB;
 
   constructor(private http: HttpClient) {
     this.nbVillains = Number;
     this.cityVillain = String;
     this.cityHero = String;
+    this.citiesDB = null;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.getCities();
   }
 
   onSelectVillain(val) {
@@ -59,6 +52,16 @@ export class HeaderComponent implements OnInit {
   }
   onSelectCityHero(val) {
     this.cityHero = val;
+  }
+
+  async getCities() {
+    const res = this.http.get('http://0.0.0.0:3090/getCities');
+    this.citiesDB = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
+    this.citiesDB.forEach(element => {
+      this.cities.push({name: element.name_});
+    });
   }
 
   async addVillains() {
