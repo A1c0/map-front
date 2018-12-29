@@ -7,7 +7,7 @@
       <p id="date">31/12/2018</p>
     </div>
     <div class="col-sm-6">
-      <div style="float: right">
+      <div class="formAddNew">
         <p class="addVillain">Add</p>
         <select class="addVillain" (change)="onSelectVillain($event.target.value)">
         <option *ngFor="let nb of villains" [value]="nb.value">
@@ -15,12 +15,23 @@
           </option>
         </select>
         <p class="addVillain">villains in</p>
-        <select class="addVillain" (change)="onSelectCity($event.target.value)">
+        <select class="addVillain" (change)="onSelectCityVillain($event.target.value)">
           <option *ngFor="let city of cities" [value]="city.name">
             {{ city.name }}
           </option>
         </select>
-        <button class="btn btn-primary" (click)="addVillains(nbVillainsSelected, citySelected)">ADD</button>
+        <button class="btn btn-primary" (click)="addVillains()">Add Villains</button>
+      </div>
+      <div class="formAddNew">
+        <p class="addHero">Add a new hero named</p>
+        <input class="addHero" type="text" #heroName placeholder="name">
+        <p class="addHero">in</p>
+        <select class="addHero" (change)="onSelectCityHero($event.target.value)">
+          <option *ngFor="let city of cities" [value]="city.name">
+            {{ city.name }}
+          </option>
+        </select>
+        <button class="btn btn-primary" (click)="addHero(heroName.value)">Add hero</button>
       </div>
     </div>
   </div>

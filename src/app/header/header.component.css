@@ -10,23 +10,31 @@
   margin: 0;
 }
 
-.btn-primary {
-  background-color: #4d70be;
-  box-shadow: 5px 10px 18px #515952;
-  margin-left: 15px;
-}
-
 #date {
   font-size: small;
   color: #4d70be;
   margin: 0;
 }
 
-.addVillain {
+.formAddNew {
+  float: right;
+  margin: 5px;
+}
+
+select, input {
+  border: 2px solid #4d70be;
+  border-radius: 5px;
+  padding: 1px;
+  padding-left: 5px;
+  height: 25px;
+}
+.btn-primary {
+  background-color: #4d70be;
+  box-shadow: 5px 10px 18px #515952;
+  margin-left: 15px;
+}
+.addVillain, .addHero {
   float: left;
   margin: 5px;
 }
-select {
-  border: 2px solid #4d70be;
-  border-radius: 5px;
-}
+
