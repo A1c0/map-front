@@ -43,7 +43,22 @@ export class MapComponent implements OnInit {
     this.startRefreshHeroes();
   }
 
-  addCity(city) {
+  async getWeather(name, latitude, longitude) {
+    const apiKey = '74d9f6867ef4e6160c30707ea5b8bf0b';
+    const url = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&lat=${latitude}&lon=${longitude}&units=metric`;
+    const res = await this.http.get(url);
+    const data = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
+    let output = `<h3>${name}</h3><br>`;
+    data['weather'].forEach(elm => {
+      output += `${elm.main}.<br>`;
+    });
+    output += `${Math.round(data['main'].temp)}°C</p>`;
+    return output;
+  }
+
+  async addCity(city) {
     const marker = L.circle([city.latitude_, city.longitude_], {
       color: '#001bff',
       fillColor: '#2ea4ff',
@@ -52,7 +67,7 @@ export class MapComponent implements OnInit {
     }).addTo(this.markersCities);
     marker.bindPopup('');
     const mapopup = marker.getPopup();
-    mapopup.setContent(city.name_);
+    mapopup.setContent(await this.getWeather(city.name_, city.latitude_, city.longitude_));
   }
 
   async updateHeroesPos() {

@@ -16,7 +16,7 @@
 #divFooter {
   background-color: #8e8787;
   bottom: 0;
-  position: absolute;
+  position: fixed;
   width: 100%;
   margin: 0;
 }
