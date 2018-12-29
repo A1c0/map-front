@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+
+import * as R from 'ramda';
 
 @Component({
   selector: 'app-legends',
@@ -26,8 +28,6 @@ export class LegendsComponent implements OnInit {
       this.getVillains();
       this.getVillainsByCity();
       this.getHeroes();
-      console.log('hero :');
-      console.log(this.heroes);
     }, 1000);
   }
 
@@ -52,4 +52,19 @@ export class LegendsComponent implements OnInit {
     });
   }
 
+  show(posHero) {
+    const getMove = R.pipe(
+      R.split('move'),
+      R.insert(1, ' → '),
+      R.reduce(R.concat, ''),
+    );
+
+    const transform = R.ifElse(
+      R.contains('move'),
+      getMove,
+      R.identity,
+    );
+
+    return transform(posHero);
+  }
 }
