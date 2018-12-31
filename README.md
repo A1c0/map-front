@@ -1,6 +1,6 @@
 # MapFront
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.0.
+This project is a part of the main project [TPSuperHeroes](https://github.com/UKyz/TPSuperHeroes)
 
 ## Development server
 
