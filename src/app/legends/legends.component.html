@@ -1,5 +1,5 @@
 <div class="legends" id="heroes">
-  <p class="title">Position des heroes</p>
+  <p class="title">Heroes infos</p>
   <table class="table table-dark table-striped">
     <thead>
     <tr>
@@ -19,18 +19,20 @@
 </div>
 
 <div class="legends">
-  <p class="title">Compteur de vilains en ville</p>
+  <p class="title">Cities infos</p>
   <table class="table table-dark table-striped">
     <thead>
     <tr>
       <th class="case tableVillains">City</th>
       <th class="case tableVillains">Number of villains</th>
+      <th class="case tableVillains">Number of mounts</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let cities of villainsByCities">
-      <td class="case">{{ cities.name }}</td>
-      <td class="case">{{ cities.score }}</td>
+    <tr *ngFor="let city of citiesInfo">
+      <td class="case">{{ city.name }}</td>
+      <td class="case">{{ city.score }}</td>
+      <td class="case">{{ city.mountsCount}}</td>
     </tr>
     </tbody>
   </table>

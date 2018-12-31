@@ -81,8 +81,6 @@ export class MapComponent implements OnInit {
     this.markersHeroes.clearLayers();
     await this.getHeroes();
     this.heroes.forEach(hero => {
-      console.log('hero:');
-      console.log(hero);
       if (!hero.moving) {
         const cityHeroes = getCity(hero.pos);
         L.circle([cityHeroes.latitude_, cityHeroes.longitude_], {
@@ -93,12 +91,10 @@ export class MapComponent implements OnInit {
           radius: 10000
         }).addTo(this.markersHeroes);
       } else {
-        console.log(R.split('move', hero.pos));
         const citiesMoveHeroes = R.pipe(
           R.split('move'),
           R.map(getCity)
         )(hero.pos);
-        console.log(citiesMoveHeroes);
         L.circle([citiesMoveHeroes[0].latitude_, citiesMoveHeroes[0].longitude_], {
           stroke: false,
           fill: true,

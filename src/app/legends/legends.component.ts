@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import * as R from 'ramda';
+import {__await} from 'tslib';
 
 @Component({
   selector: 'app-legends',
@@ -13,6 +14,9 @@ export class LegendsComponent implements OnInit {
   private villains;
   private villainsByCities;
   private heroes;
+  private mountsPerCities;
+
+  public citiesInfo;
 
   constructor(private http: HttpClient) {
     this.villains = null;
@@ -21,19 +25,25 @@ export class LegendsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.getVillains();
-    await this.getVillainsByCity();
-    await this.getHeroes();
-    setInterval(() => {
-      this.getVillains();
-      this.getVillainsByCity();
-      this.getHeroes();
+    setInterval(async() => {
+      await this.getVillains();
+      await this.getVillainsByCity();
+      await this.getHeroes();
+      await this.getMountsPerCity();
+      this.mergeInfo();
     }, 1000);
   }
 
   async getVillains() {
     const res = this.http.get(' http://0.0.0.0:3060/getVillains');
     this.villains = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
+  }
+
+  async getMountsPerCity() {
+    const res = this.http.get(' http://0.0.0.0:3080/getMountsPerCity');
+    this.mountsPerCities = await new Promise((resolve) => {
       res.subscribe(resolve);
     });
   }
@@ -66,5 +76,30 @@ export class LegendsComponent implements OnInit {
     );
 
     return transform(posHero);
+  }
+
+  private mergeInfo() {
+    const getNbMountsByCity = city => R.pipe(
+      R.filter(x => R.pipe(
+        R.prop('city'),
+        R.equals(city)
+      )(x)),
+      R.head,
+      R.prop('count'),
+    )(this.mountsPerCities);
+
+    const correct = R.ifElse(
+      R.isNil,
+      R.always(0),
+      R.identity
+    );
+
+    const addMountsCount = city => R.assoc('mountsCount', R.pipe(
+      R.prop('name'),
+      getNbMountsByCity,
+      correct
+    )(city), city);
+
+    this.citiesInfo = R.map(addMountsCount, this.villainsByCities);
   }
 }
