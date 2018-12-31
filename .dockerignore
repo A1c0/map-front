@@ -1,0 +1,6 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Node template template
+.idea
+node_modules
+yarn.lock
+package-lock.json
