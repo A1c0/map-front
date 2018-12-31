@@ -13,25 +13,42 @@ export class LegendsComponent implements OnInit {
 
   private villains;
   private villainsByCities;
-  private heroes;
   private mountsPerCities;
+  private cities;
 
+  public heroes;
   public citiesInfo;
 
   constructor(private http: HttpClient) {
     this.villains = null;
+    this.citiesInfo = null;
+    this.mountsPerCities = null;
     this.villainsByCities = null;
     this.heroes = null;
   }
 
   async ngOnInit() {
-    setInterval(async() => {
+    await this.getCities();
+    console.log('this.cities:');
+    console.log(this.cities);
+    setInterval(async () => {
       await this.getVillains();
       await this.getVillainsByCity();
       await this.getHeroes();
       await this.getMountsPerCity();
       this.mergeInfo();
     }, 1000);
+  }
+
+  async getCities() {
+    // @ts-ignore
+    const filter = R.map(x => ({name: x.name_}));
+
+    const res = this.http.get(' http://0.0.0.0:3090/getCities');
+    const data = await new Promise((resolve) => {
+      res.subscribe(resolve);
+    });
+    this.cities = filter(data);
   }
 
   async getVillains() {
@@ -62,7 +79,7 @@ export class LegendsComponent implements OnInit {
     });
   }
 
-  show(posHero) {
+  public show(posHero) {
     const getMove = R.pipe(
       R.split('move'),
       R.insert(1, ' → '),
@@ -79,7 +96,7 @@ export class LegendsComponent implements OnInit {
   }
 
   private mergeInfo() {
-    const getNbMountsByCity = city => R.pipe(
+    const getNbMountByCity = city => R.pipe(
       R.filter(x => R.pipe(
         R.prop('city'),
         R.equals(city)
@@ -88,18 +105,43 @@ export class LegendsComponent implements OnInit {
       R.prop('count'),
     )(this.mountsPerCities);
 
+    const getNbVillainByCity = city => R.pipe(
+      R.filter(x => R.pipe(
+        R.prop('name'),
+        R.equals(city)
+      )(x)),
+      R.head,
+      R.prop('score'),
+    )(this.villainsByCities);
+
     const correct = R.ifElse(
       R.isNil,
       R.always(0),
       R.identity
     );
 
-    const addMountsCount = city => R.assoc('mountsCount', R.pipe(
+    const addVillainCount = city => R.assoc('score', R.pipe(
       R.prop('name'),
-      getNbMountsByCity,
+      getNbVillainByCity,
       correct
     )(city), city);
 
-    this.citiesInfo = R.map(addMountsCount, this.villainsByCities);
+    const addMountsCount = city => R.assoc('mountsCount', R.pipe(
+      R.prop('name'),
+      getNbMountByCity,
+      correct
+    )(city), city);
+
+    // @ts-ignore
+    this.citiesInfo = R.pipe(
+      R.map(R.pipe(
+        addVillainCount,
+        addMountsCount
+      )),
+      R.sortWith([
+        R.descend(R.prop('score')),
+        R.ascend(R.prop('mountsCount'))
+      ]),
+    )(this.cities);
   }
 }
