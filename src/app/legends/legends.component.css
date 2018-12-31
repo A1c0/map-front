@@ -28,3 +28,21 @@
 .tableVillains {
   width: 33.3%;
 }
+
+
+.input-color {
+  position: relative;
+  width: auto;
+}
+.input-color p {
+  padding-left: 20px;
+  color: #ffffff;
+}
+.input-color .color-box {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
