@@ -91,6 +91,12 @@ export class MapComponent implements OnInit {
           radius: 10000
         }).addTo(this.markersHeroes);
       } else {
+        let color ='';
+        if (hero.mountUsed) {
+          color ='#8607ff';
+        } else {
+          color ='#ff000e';
+        }
         const citiesMoveHeroes = R.pipe(
           R.split('move'),
           R.map(getCity)
@@ -98,7 +104,7 @@ export class MapComponent implements OnInit {
         L.circle([citiesMoveHeroes[0].latitude_, citiesMoveHeroes[0].longitude_], {
           stroke: false,
           fill: true,
-          fillColor: '#ff000e',
+          fillColor: color,
           fillOpacity: 0.7,
           radius: 10000
         }).addTo(this.markersHeroes);
@@ -106,9 +112,9 @@ export class MapComponent implements OnInit {
           [citiesMoveHeroes[0].latitude_, citiesMoveHeroes[0].longitude_],
           [citiesMoveHeroes[1].latitude_, citiesMoveHeroes[1].longitude_],
         ], {
-          color: '#ff000e',
+          color: color,
           fill: true,
-          fillColor: '#ff000e',
+          fillColor: color,
           fillOpacity: 0.7
         }).addTo(this.markersHeroes);
       }
